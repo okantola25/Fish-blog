@@ -1,9 +1,9 @@
 /*sävyt figmasta variableiks. nimiä varmaan vois muuttaa*/
 :root {
-  --väri1: #4A9D0B;
-  --väri2: #AEFF71;
-  --väri3: #51A80F;
-  --väri4: #0FA865;
+  --vari1: #4A9D0B;
+  --vari2: #AEFF71;
+  --vari3: #51A80F;
+  --vari4: #0FA865;
 }
 
 .navbar {
