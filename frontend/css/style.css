@@ -7,18 +7,15 @@
 }
 
 .navbar {
-    background-color: var(--väri4);
-}
-
-@media (max-width: 991px) {
-    .navbar .navbar-collapse {
-        background-color:  var(--väri4);
-        margin-top: 0.5rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-    }
+    background-color: var(--vari4);
 }
 
 #postButton {
-    background-color: var(--väri4);
+    background-color: var(--vari4);
+}
+
+.fish-card {
+    background-color: black;
+    height: 100%;
+    aspect-ratio: 4/5;
 }
