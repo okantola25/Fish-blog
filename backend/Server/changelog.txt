@@ -1,0 +1,5 @@
+Lisätty:
+npm install express dotenv bcrypt express-session pg
+Testi database query
+
+Jatkossa:
