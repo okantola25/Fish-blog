@@ -1,0 +1,24 @@
+/*sävyt figmasta variableiks. nimiä varmaan vois muuttaa*/
+:root {
+  --väri1: #4A9D0B;
+  --väri2: #AEFF71;
+  --väri3: #51A80F;
+  --väri4: #0FA865;
+}
+
+.navbar {
+    background-color: var(--väri4);
+}
+
+@media (max-width: 991px) {
+    .navbar .navbar-collapse {
+        background-color:  var(--väri4);
+        margin-top: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+    }
+}
+
+#postButton {
+    background-color: var(--väri4);
+}
