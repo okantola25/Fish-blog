@@ -1,0 +1,14 @@
+@hostname = localhost
+@port = 3001
+@host = http://{{hostname}}:{{port}}
+
+### Register a new user
+POST http://localhost:3001/register
+Content-Type: application/x-www-form-urlencoded
+
+username=mytestuser99&password=mysecretpassword
+### Login with the user
+POST http://localhost:3001/login
+Content-Type: application/x-www-form-urlencoded
+
+username=mytestuser99&password=mysecretpassword
