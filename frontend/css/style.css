@@ -1,24 +1,34 @@
 /*sävyt figmasta variableiks. nimiä varmaan vois muuttaa*/
 :root {
-  --väri1: #4A9D0B;
-  --väri2: #AEFF71;
-  --väri3: #51A80F;
-  --väri4: #0FA865;
+  --vari1: #4A9D0B;
+  --vari2: #AEFF71;
+  --vari3: #51A80F;
+  --vari4: #0FA865;
 }
 
 .navbar {
-    background-color: var(--väri4);
-}
-
-@media (max-width: 991px) {
-    .navbar .navbar-collapse {
-        background-color:  var(--väri4);
-        margin-top: 0.5rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-    }
+    background-color: var(--vari4);
 }
 
 #postButton {
-    background-color: var(--väri4);
+    background-color: var(--vari4);
+}
+
+.fish-card {
+    background-color: var(--vari2);
+    height: 100%;
+    aspect-ratio: 4/5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+.fish-card img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 150px;
+    object-fit: fill;
 }
