@@ -19,18 +19,55 @@
     height: 100%;
     aspect-ratio: 4/5;
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     overflow: hidden;
     border: 1px solid black;
 }
 
-.fish-card img {
+.fish-card > img {
     display: block;
     width: 100%;
     max-width: 100%;
     height: 150px;
     object-fit: fill;
+}
+
+.fish-card .icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    align-self: flex-start;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.fish-card .icon-link:hover,
+.fish-card .icon-link:focus,
+.fish-card .icon-link:active {
+    text-decoration: none;
+}
+
+.fish-card .icon-link:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+.fish-card .icon-link img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    transition: transform 0.2s ease-in-out;
+}
+
+.fish-card .icon-link-hover:hover img {
+    transform: var(--bs-icon-link-transform, translate3d(0, -0.125rem, 0));
 }
 
 .search-container {
@@ -51,4 +88,19 @@
     left: 15px;
     transform: translateY(-50%);
     color: #888;
+}
+
+.tykkays-counter {
+    display: inline;
+    margin: 0;
+    line-height: 1;
+}
+
+#sorting {
+    height: 50px;
+    width: 100%;
+}
+
+#filterBar .row {
+    align-items: center;
 }
