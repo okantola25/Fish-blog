@@ -26,6 +26,10 @@
     border: 1px solid black;
 }
 
+.fish-card-infocontainer {
+    padding: 0.5rem;
+}
+
 .fish-card > img {
     display: block;
     width: 100%;
@@ -38,7 +42,6 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    margin: 0.5rem;
     padding: 0;
     border: 0;
     background: transparent;
@@ -68,6 +71,17 @@
 
 .fish-card .icon-link-hover:hover img {
     transform: var(--bs-icon-link-transform, translate3d(0, -0.125rem, 0));
+}
+
+.fish-card h2 {
+    font-size: larger;
+    font-weight: 500;
+    margin: 0;
+}
+
+.fish-card h3 {
+    font-size: large;
+    font-weight: 400;
 }
 
 .search-container {
