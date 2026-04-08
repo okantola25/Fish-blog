@@ -13,3 +13,20 @@ async function loadNavbar() {
 }
 
 document.addEventListener("DOMContentLoaded", loadNavbar);
+
+async function loadPart(targetId, path) {
+  const response = await fetch(path);
+  const html = await response.text();
+  document.getElementById(targetId).innerHTML = html;
+}
+
+async function loadLayout() {
+  try {
+    await loadPart("navbar-container", "./components/navbar.html");
+    await loadPart("upload-modal-container", "./components/upload-modal.html");
+  } catch (error) {
+    console.error("Layout loading failed:", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadLayout);

@@ -6,7 +6,7 @@
     </a>
 
     <div class="d-flex align-items-center ms-auto gap-2">
-      <button type="button" class="btn" id="postButton">Post</button>
+      <button type="button" class="btn" id="postButton" data-bs-toggle="modal" data-bs-target="#uploadModal">Julkaise</button>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -31,19 +31,13 @@
           <form class="dropdown-menu p-4" action="/kirjaudu" method="POST">
             <div class="mb-3">
               <label for="exampleDropdownFormEmail2" class="form-label">Käyttäjänimi</label>
-              <input type="email" class="form-control" id="exampleDropdownFormEmail2" name="username" placeholder="Käyttäjä123">
+              <input class="form-control" id="exampleDropdownFormEmail2" name="username" placeholder="Käyttäjä123">
             </div>
             <div class="mb-3">
               <label for="exampleDropdownFormPassword2" class="form-label">Salasana</label>
               <input type="password" class="form-control" id="exampleDropdownFormPassword2" name="password" placeholder="Salasana">
             </div>
             <div class="mb-3">
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="remember" id="dropdownCheck2">
-                <label class="form-check-label" for="dropdownCheck2">
-                  Remember me
-                </label>
-              </div>
             </div>
             <button type="submit" class="btn btn-primary">Kirjaudu</button>
           </form>
@@ -67,3 +61,6 @@
     </div>
   </div>
 </nav>
+
+<!--upload-->
+<div id="upload-modal-container"></div>
