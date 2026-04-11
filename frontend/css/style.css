@@ -133,3 +133,22 @@
     text-align: center;
     margin-top: 20px;
 }
+
+/*Foorumi*/
+#forum-post-container {
+
+}
+
+.post-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 1rem;
+}
+
+.post-buttons > svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+    object-fit: contain;
+}
