@@ -24,6 +24,7 @@ async function loadLayout() {
   try {
     await loadPart("navbar-container", "./components/navbar.html");
     await loadPart("upload-modal-container", "./components/upload-modal.html");
+    await loadPart("comments-modal-container", "./components/comments-modal.html");
   } catch (error) {
     console.error("Layout loading failed:", error);
   }
