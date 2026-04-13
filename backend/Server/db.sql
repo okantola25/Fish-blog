@@ -1,13 +1,14 @@
-//Geminin keksimät database pöydät menee pg4admin niin voi testata local db ennen ku laitetaa azuree//
+-- Database pöydät menee pgadmin4 niin voi testata local db ennen ku laitetaa julki
+-- DELETE ON CASCADE meinaa että jos poistaa tilin nii poistaa muistaki db pöydistä tiedot
 
--- 1. Create Users Table
+-- Käyttäjät pöytä
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password TEXT NOT NULL
 );
 
--- 2. Create Posts Table
+-- Forum postien pöytä
 CREATE TABLE posts (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -16,20 +17,39 @@ CREATE TABLE posts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Create Likes/Ratings Table
-CREATE TABLE likes (
+-- Forum vastaukset pöytä
+CREATE TABLE replies (
+    id SERIAL PRIMARY KEY,
+    thread_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Forum postien tykkäykset
+CREATE TABLE postLikes (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
-    UNIQUE(user_id, post_id) -- Prevents double-liking
+    UNIQUE(user_id, post_id)
 );
 
--- 4. Create Session Table (Required by connect-pg-simple)
+-- Käyttäjien istunnot pöytä
 CREATE TABLE "session" (
   "sid" varchar NOT NULL COLLATE "default",
   "sess" json NOT NULL,
   "expire" timestamp(6) NOT NULL
 )
+
+-- Kalakanta tykkäykset
+CREATE TABLE kalakantaTykkaykset (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    image_name VARCHAR(100) NOT NULL,
+    UNIQUE(user_id, image_name)
+);
+
 WITH (OIDS=FALSE);
 
 ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;

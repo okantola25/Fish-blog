@@ -2,3 +2,7 @@ Lisätty:
 npm install express dotenv bcrypt express-session pg
 Testi database query, register ja login toimii pg4adminin kautta lokaalisti OK
 
+2.4
+npm install connect-pg-simple
+Käyttäjä istunnot, rekisteröinti, kirjautuminen ja ulos kirjautuminen toimii OK
+

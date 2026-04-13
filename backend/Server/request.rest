@@ -1,0 +1,41 @@
+@hostname = localhost
+@port = 3000
+@host = http://{{hostname}}:{{port}}
+
+### Register a new user
+POST http://localhost:3000/rekisteroi
+Content-Type: application/x-www-form-urlencoded
+
+username=testi&password=salasana
+
+### Get users
+GET http://localhost:3000/users
+Content-Type: application/json
+
+### Login with the user
+POST http://localhost:3000/kirjaudu
+Content-Type: application/x-www-form-urlencoded
+
+username=testi&password=salasana
+
+### Logout
+POST http://localhost:3000/kirjUlos
+Content-Type: application/x-www-form-urlencoded
+
+### Delete user
+DELETE http://localhost:3000/api/me
+
+### Create post (Vaatii kirjautumise ensin)
+POST http://localhost:3000/api/posts
+Content-Type: application/json
+
+{
+    "title": "Kala",
+    "content": "Löyty kala järvestä :D"
+}
+
+### Delete post (päätyyn postin id)
+DELETE http://localhost:3000/api/posts/1
+
+### Get posts
+GET http://localhost:3000/api/posts

@@ -1,0 +1,66 @@
+<nav class="navbar sticky-top navbar-expand-lg mb-3">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="./index.html">
+      <img src="./assets/fish-svgrepo-com.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      Kalakanta
+    </a>
+
+    <div class="d-flex align-items-center ms-auto gap-2">
+      <button type="button" class="btn" id="postButton" data-bs-toggle="modal" data-bs-target="#uploadModal">Julkaise</button>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="./forum.html">Foorumi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="./index.html">Kalakanta</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="./profile.html">Profiili</a>
+        </li>
+
+        <li class="nav-item dropdown" id="auth-vieras">
+          <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+            Kirjaudu
+          </a>
+          <form class="dropdown-menu p-4" action="/kirjaudu" method="POST">
+            <div class="mb-3">
+              <label for="exampleDropdownFormEmail2" class="form-label">Käyttäjänimi</label>
+              <input class="form-control" id="exampleDropdownFormEmail2" name="username" placeholder="Käyttäjä123">
+            </div>
+            <div class="mb-3">
+              <label for="exampleDropdownFormPassword2" class="form-label">Salasana</label>
+              <input type="password" class="form-control" id="exampleDropdownFormPassword2" name="password" placeholder="Salasana">
+            </div>
+            <div class="mb-3">
+            </div>
+            <button type="submit" class="btn btn-primary">Kirjaudu</button>
+          </form>
+        </li>
+
+        <li class="nav-item dropdown" id="auth-käyttäjä" style="display: none">
+          <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">Käyttäjä</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="./profile.html">Omat tiedot</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form action="/kirjUlos" method="POST" style="margin: 0;">
+                <button type="submit" class="dropdown-item">
+                  Kirjaudu ulos
+                </button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!--upload-->
+<div id="upload-modal-container"></div>
