@@ -49,12 +49,8 @@ function renderPost(post) {
               <button type="button" class="btn ${btnClass} post-buttons like-btn" data-id="${post.id}">
                 <span class="like-count">${post.total_likes}</span>
                 <span class="like-text">${likeText}</span>
-              <button type="button" class="btn btn-outline-dark post-buttons" data-bs-toggle="modal" data-bs-target="#comments-modal">
-                <svg class="comment-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <g transform="translate(-152 -255)" fill="currentColor">
-                    <path d="M168,281 C166.832,281 165.704,280.864 164.62,280.633 L159.912,283.463 L159.975,278.824 C156.366,276.654 154,273.066 154,269 C154,262.373 160.268,257 168,257 C175.732,257 182,262.373 182,269 C182,275.628 175.732,281 168,281 L168,281 Z M168,255 C159.164,255 152,261.269 152,269 C152,273.419 154.345,277.354 158,279.919 L158,287 L165.009,282.747 C165.979,282.907 166.977,283 168,283 C176.836,283 184,276.732 184,269 C184,261.269 176.836,255 168,255 L168,255 Z M175,266 L161,266 C160.448,266 160,266.448 160,267 C160,267.553 160.448,268 161,268 L175,268 C175.552,268 176,267.553 176,267 C176,266.448 175.552,266 175,266 L175,266 Z M173,272 L163,272 C162.448,272 162,272.447 162,273 C162,273.553 162.448,274 163,274 L173,274 C173.552,274 174,273.553 174,273 C174,272.447 173.552,272 173,272 L173,272 Z"/>
-                  </g>
-                </svg>
+              </button>
+              <button type="button" class="btn btn-outline-dark post-buttons" data-bs-toggle="modal" data-bs-target="#comments-modal" data-id="${post.id}">
                 Kommentit
               </button>
             </footer>
@@ -94,7 +90,7 @@ document.getElementById('load-more-btn').addEventListener('click',()=>{
   loadPosts()
 }) //Lataa uusimmat 10 julkaisua
 
-document.getElementById('forum-post-list')-addEventListener('click', async (e)=>{
+document.getElementById('forum-post-list').addEventListener('click', async (e)=>{
   const btn = e.target.closest('.like-btn')
   if(!btn) return
 
@@ -120,3 +116,78 @@ document.getElementById('forum-post-list')-addEventListener('click', async (e)=>
     console.error("Jokin meni pieleen:", err)
   }
 }) //Lataa lisää julkaisuja napista
+
+let currentOpenPostId = null
+
+document.getElementById('forum-post-list').addEventListener('click', (e) =>{
+  const btn = e.target.closest('[data-bs-target="#comments-modal"]')
+  if(!btn) return
+
+  const postCard = btn.closest('.card')
+  currentOpenPostId = btn.getAttribute('data-id')
+
+  document.getElementById('modal-post-title').innerText = postCard.querySelector('h2').innerText
+  document.getElementById('modal-post-meta').innerText = postCard.querySelector('header p.text-muted').innerText
+  document.getElementById('modal-post-content').innerText = postCard.querySelector('.card-body p:not(.text-muted)').innerText
+
+  
+  fetchReplies(currentOpenPostId)
+})
+
+async function fetchReplies(postId){
+  const list = document.getElementById('modal-replies-list')
+  list.innerHTML = '<li class="text-center p-3">Ladataan...</li>'
+
+  const res = await fetch(`/api/load-replies/${postId}`)
+  const replies = await res.json()
+
+  list.innerHTML = ''
+  replies.forEach(reply =>{
+    list.insertAdjacentHTML('beforeend',
+      `<li class="list-group-item mb-1">
+        <div class="card p-2 border-0 bg-light">
+          <header>
+            <p class="text-muted small mb-1">${reply.username} • ${new Date(reply.created_at).toLocaleString('fi-FI')}</p>
+          </header>
+          <p class="mb-0">${reply.content}</p>
+          </div>
+        </li>
+      `)    
+  })
+} //Lataa kommentit
+function attachReplyListener() {
+document.addEventListener('submit', async (e) =>{
+  if(e.target && e.target.id === 'reply-form'){
+      e.preventDefault()
+      const contentField = document.getElementById('reply-text')
+      const content = contentField.value.trim()
+
+      if(!currentOpenPostId){
+        console.error("Ei valittua julkaisua")
+        return
+      }
+
+    try{
+      const res = await fetch(`/api/post-reply/${currentOpenPostId}`,{
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({content:content})
+      })
+
+      if(res.ok){
+        contentField.value = ''
+        fetchReplies(currentOpenPostId)
+      } else if(res.status === 401){
+        alert("Kirjaudu sisään!")
+      }
+  }catch(err){
+    console.error("Kommentin lähetys epäonnistui", err)
+}}})}
+async function loadModal() {
+    const resp = await fetch('./components/comments-modal.html');
+    const html = await resp.text();
+    document.getElementById('comments-modal-container').innerHTML = html;
+    attachReplyListener();
+}
+  
+loadModal()

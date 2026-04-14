@@ -2,96 +2,27 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
+        <h5 class="modal-title">Vastaukset</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sulje"></button>
       </div>
 
       <div class="modal-body">
-        <div class="card-body">
-          <header>
-            <!--Otsikko-->
-            <h2 class="h5 mb-1">Otsikko</h2>
-            <p class="text-muted">nimimerkki ja postausaika?</p>
-          </header>
-          <!--leipäteksti-->
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel vehicula lorem. Mauris et tellus efficitur nulla porta tempus vel quis lectus. Vestibulum nec ante blandit, sodales diam sed, lacinia dolor.</p>
+        <div class="border-bottom mb-3">
+          <h2 class="h5 mb-1" id="modal-post-title"></h2>
+          <p class="text-muted small" id="modal-post-meta"></p>
+          <p id="modal-post-content"></p>
         </div>
 
-        <ul class="list p-0">
-          <!--kommentti skeletoni-->
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-          <li class="list-group-item mb-1">
-            <div class="card p-2">
-              <header>
-                <p class="text-muted">nimimerkki ja postausaika?</p>
-              </header>
-              <!--leipäteksti-->
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. :D</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-
-      <div class="modal-footer justify-content-center w-100">
-        <form class="w-100">
-          <div class="form-group">
-            <textarea class="form-control flex-grow-1" id="" placeholder="Kommentoi" rows="3" style="resize: vertical;"></textarea>
-            <button type="button" class="btn btn-primary mt-2">Julkaise</button>          
+        <h6 class="fw-bold">Keskustelu</h6>
+        <ul class="list-unstyled" id="modal-replies-list">
+           </ul>
+      </div> 
+      <div class="modal-footer">
+        <form class="w-100" id="reply-form">
+          <div class="form-group d-flex flex-column">
+            <textarea class="form-control mb-2" id="reply-text" placeholder="Kirjoita vastaus..." rows="3" required></textarea>
+            <button type="submit" class="btn btn-primary align-self-end">Julkaise hyvä juttu</button>          
           </div>
-
         </form>
       </div>
     </div>

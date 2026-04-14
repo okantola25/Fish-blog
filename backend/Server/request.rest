@@ -35,10 +35,21 @@ Content-Type: application/json
 }
 
 ### Like post (päätyyn postin id)
-POST http://localhost:3000/api/like-post/33
+POST http://localhost:3000/api/like-post/1
 
 ### Delete post (päätyyn postin id)
 DELETE http://localhost:3000/api/delete-post/10
 
 ### Get posts
 GET http://localhost:3000/api/load-posts?page=1
+
+### Get replies
+GET http://localhost:3000/api/load-replies/1
+
+### Post reply
+POST http://localhost:3000/api/post-reply/1
+Content-Type: application/json
+
+{
+    "content": "Hienoa!"
+}

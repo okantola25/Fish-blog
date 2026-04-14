@@ -185,6 +185,43 @@ app.post('/api/like-post/:id', async (req, res) =>{
     }
 }) //Julkaisun tykkäys methodi
 
+app.get('/api/load-replies/:id', async (req, res) =>{
+    const postId = req.params.id
+    try{
+        const result = await pool.query(
+            `SELECT replies.*, users.username 
+             FROM replies 
+             JOIN users ON replies.user_id = users.id 
+             WHERE posts_id = $1 
+             ORDER BY created_at ASC`,
+             [postId]
+        )
+        res.json(result.rows)
+    } catch(err){
+        console.error(err)
+        res.status(500).json({error: "Virhe kommenttien latauksessa."})
+    }
+}) //Lataa kommentit
+
+app.post('/api/post-reply/:id', async (req, res) =>{
+    const postId = req.params.id
+    const userId = req.session.userId
+    const {content} = req.body
+
+    if(!userId) return res.status(401).json({error:"Kirjaudu sisään vastataksesi"})
+    if(!content || content.trim() === '') return res.status(400).json({error: "Kommentti ei voi olla tyhjä"})
+
+    try{
+        await pool.query(
+            'INSERT INTO replies (posts_id, user_id, content) VALUES ($1, $2, $3)',
+            [postId, userId, content]
+        )
+        res.status(201).json({message:"Kommentti julkaistu."})
+    }catch(err){
+        console.error(err)
+        res.status(500).json({error:"Virhe kommentoitaessa"})
+}})
+
 app.get('/api/load-posts', async (req, res) =>{
     const page = parseInt(req.query.page) || 1
     const limit = 10
