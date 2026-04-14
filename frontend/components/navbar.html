@@ -28,7 +28,7 @@
           <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
             Kirjaudu
           </a>
-          <form class="dropdown-menu p-4" action="/kirjaudu" method="POST">
+          <form class="dropdown-menu p-4" method="POST">
             <div class="mb-3">
               <label for="email" class="form-label">Käyttäjänimi</label>
               <input class="form-control" id="email" name="username" placeholder="Käyttäjä123">
@@ -39,7 +39,11 @@
             </div>
             <div class="mb-3">
             </div>
-            <button type="submit" class="btn btn-primary">Kirjaudu</button>
+            <button type="submit" class="btn btn-primary" formaction="/kirjaudu">Kirjaudu</button>
+            <div id="register-container" class="d-flex align-items-center gap-1 mt-2 ps-1">
+              <p class="m-0">Uusi käyttäjä?</p>
+              <button type="submit" class="btn btn-link p-0" formaction="rekisteroi">Rekisteröidy</button>
+            </div>
           </form>
         </li>
 

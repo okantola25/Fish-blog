@@ -152,3 +152,8 @@
     fill: currentColor;
     object-fit: contain;
 }
+
+#register-container {
+    display: flex;
+    align-items: center;
+}
