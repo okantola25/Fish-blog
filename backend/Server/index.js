@@ -59,6 +59,13 @@ app.post('/kirjUlos', (req, res) => {
 
 app.post('/rekisteroi', async (req, res) =>{
     const { username, password } = req.body
+    if (!username?.trim()) {
+            return res.status(400).json({ error: "Käyttäjänimi ei voi olla tyhjä"})
+        }
+    if(!password?.trim() || password.trim().length < 5) {
+            return res.status(400).json({ error: "Salasanan täytyy olla vähintään 5 merkkiä"})
+        } //tarkastaa tietojen min pituudet
+
     try{
         await registerUser(username, password)
         res.redirect('/index.html')
