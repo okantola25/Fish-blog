@@ -64,7 +64,7 @@ app.post('/rekisteroi', async (req, res) =>{
         }
     if(!password?.trim() || password.trim().length < 5) {
             return res.status(400).json({ error: "Salasanan täytyy olla vähintään 5 merkkiä"})
-        }
+        } //tarkastaa tietojen min pituudet
 
     try{
         await registerUser(username, password)
