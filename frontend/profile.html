@@ -11,22 +11,25 @@
 <body>
   <div id="navbar-container"></div>
   
-    <!-- Sisältö -->
-      <div class="profile-container">
-            <div class="profile-info">
-                <h2>Käyttäjätiedot</h2>
-                <p><strong>Käyttäjätunnus:</strong> kalastaja123</p>
-                
-            </div>
+<!-- omat postaukset -->
+     <div class="container-sm">
+  <div class="card password-card">
+    <div class="password-title">Omat postaukset</div>
+
+    <div class="posts-box">
+      <div class="post-item" id="postViewer">
+        <h5 class="post-title" id="postTitle">Ahven 1.2 kg</h5>
+        <p class="post-text" id="postText">Sain ahvenen tänään järveltä.</p>
       </div>
 
-        <div class="profile-container">
-            <div class="profile-info">
-                <h2>Käyttäjätiedot</h2>
-                <p><strong>Käyttäjätunnus:</strong> kalastaja123</p>
-                
-            </div>
-        </div>
+      <div class="post-controls">
+        <button type="button" class="btn btn-post-nav" onclick="previousPost()">Edellinen</button>
+        <button type="button" class="btn btn-post-nav" onclick="nextPost()">Seuraava</button>
+      </div>
+    </div>
+  </div>
+</div> 
+
 <!-- vaihda salasana -->
     <div class="container-sm">
       <div class="card password-card">
@@ -47,11 +50,8 @@
     </div>
 <!-- poista tili -->
   <div class="container-sm">
-    <div class="card password-card mt-4">
+    <div class="card password-card">
       <div class="password-title">Poista tili</div>
-
-          
-
           <form>
               <label for="deletePassword" class="form-label">Vahvista salasana</label>
               <input type="password" class="form-control" id="deletePassword">
