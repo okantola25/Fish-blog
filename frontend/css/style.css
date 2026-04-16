@@ -253,3 +253,33 @@
 .btn-post-nav:hover {
   background-color: #9bea66;
 }
+.post-item {
+  padding: 12px;
+  border: 1px solid #d6d6d6;
+  border-radius: 10px;
+  background-color: #ffffff;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-item-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
+}
+
+.btn-delete-post {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 16px;
+  width: auto;
+}
+
+.btn-delete-post:hover {
+  background-color: #d84333;
+  color: white;
+}

@@ -252,5 +252,33 @@ app.get('/api/load-posts', async (req, res) =>{
     }
 }) //Lataa julkaisut
 
+//profiili sivu, tarkistaa sisäänkirjautumisen, hakeee julkaisut
+
+
+app.get('/api/my-posts', async (req, res) => {
+    const userId = req.session.userId
+
+    if (!userId) {
+        return res.status(401).json({ error: 'Kirjaudu sisään.' })
+    }
+
+    try {
+        const result = await pool.query(
+            `SELECT id, title, content, created_at
+             FROM posts
+             WHERE user_id = $1
+             ORDER BY created_at DESC`,
+            [userId]
+        )
+
+        res.json(result.rows)
+    } catch (err) {
+        console.error('Error fetching my posts:', err)
+        res.status(500).json({ error: 'Palvelinvirhe.' })
+    }
+})
+
+
+
 app.listen(port)
 console.log('success')

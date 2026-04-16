@@ -14,35 +14,97 @@ function hideConfirmButtons() {
 
 
 
-// omat postaukset
-const posts = [
-  {
-    title: "Ahven 1.2 kg",
-    text: "fafeferwg regerg gregerg hyfgfbrfthfb dfbdrg rewgsdfgerg  gerg eg erg erg geg"
-  },
-  {
-    title: "Kuha 2.8 kg",
-    text: "päpää   pälälälä pälääläopä"
-  },
-  {
-    title: "Hauki 4.1 kg",
-    text: "pläpäläpäläpälä "
-  }
-];
-
+// omat postaukset näkyviin profiliiin
+let posts = [];
 let currentPostIndex = 0;
 
+async function loadMyPosts() {
+  try {
+    const response = await fetch('/api/my-posts');
+
+    if (!response.ok) {
+      throw new Error('Postauksien lataus epäonnistui');
+    }
+
+    posts = await response.json();
+    showPost();
+  } catch (error) {
+    console.error('Virhe omien postauksien latauksessa:', error);
+    document.getElementById("postTitle").textContent = "Virhe";
+    document.getElementById("postText").textContent = "Postauksia ei voitu ladata.";
+    document.getElementById("postDate").textContent = "";
+  }
+}
+
 function showPost() {
-  document.getElementById("postTitle").textContent = posts[currentPostIndex].title;
-  document.getElementById("postText").textContent = posts[currentPostIndex].text;
+  const titleEl = document.getElementById("postTitle");
+  const textEl = document.getElementById("postText");
+  const dateEl = document.getElementById("postDate");
+  const deleteBtn = document.getElementById("deletePostBtn");
+
+  if (!posts.length) {
+    titleEl.textContent = "Ei postauksia";
+    textEl.textContent = "Sinulla ei ole vielä omia postauksia.";
+    dateEl.textContent = "";
+    deleteBtn.classList.add("d-none");
+    return;
+  }
+
+  deleteBtn.classList.remove("d-none");
+
+  const post = posts[currentPostIndex];
+
+  titleEl.textContent = post.title;
+  textEl.textContent = post.content;
+  dateEl.textContent = new Date(post.created_at).toLocaleString('fi-FI');
 }
 
 function nextPost() {
+  if (!posts.length) return;
   currentPostIndex = (currentPostIndex + 1) % posts.length;
   showPost();
 }
 
 function previousPost() {
+  if (!posts.length) return;
   currentPostIndex = (currentPostIndex - 1 + posts.length) % posts.length;
   showPost();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadMyPosts();
+});
+
+//poista julkaisu
+
+async function deleteCurrentPost() {
+  if (!posts.length) return;
+
+  const confirmed = confirm("Haluatko varmasti poistaa tämän julkaisun?");
+  if (!confirmed) return;
+
+  const postId = posts[currentPostIndex].id;
+
+  try {
+    const response = await fetch(`/api/delete-post/${postId}`, {
+      method: "DELETE"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Julkaisun poistaminen epäonnistui.");
+    }
+
+    posts.splice(currentPostIndex, 1);
+
+    if (currentPostIndex >= posts.length && currentPostIndex > 0) {
+      currentPostIndex--;
+    }
+
+    showPost();
+  } catch (error) {
+    console.error("Virhe julkaisun poistossa:", error);
+    alert("Julkaisun poistaminen epäonnistui.");
+  }
 }
