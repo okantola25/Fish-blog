@@ -234,6 +234,27 @@ app.get('/api/load-posts', async (req, res) =>{
     const limit = 10
     const offset = (page-1)* limit
     const userId = req.session.userId || null
+
+    const search = (req.query.search || '').trim();
+    const sort = (req.query.sort || 'newest').toLowerCase();
+
+    const sortingOptions = {
+        "newest": "posts.created_at DESC",
+        "oldest": "posts.created_at ASC",
+        "likes-desc": "total_likes DESC, posts.created_at DESC",
+        "likes-asc": "total_likes ASC, posts.created_at DESC"
+    };
+    
+    const params = [limit, offset, userId]
+    let searchQuery = ''
+    
+    if(search) {
+        params.push(`%${search}%`)
+        searchQuery = 'WHERE posts.title ILIKE $4 or posts.content ILIKE $4'
+    }
+
+    const sortParam = sortingOptions[sort] || sortingOptions.newest
+
     try{
         const result = await pool.query(
             `SELECT posts.id, posts.title, posts.content, posts.created_at, users.username,
@@ -242,18 +263,19 @@ app.get('/api/load-posts', async (req, res) =>{
             EXISTS(SELECT 1 FROM postLikes WHERE post_id = posts.id AND user_id = $3) AS user_liked
             FROM posts 
             JOIN users ON posts.user_id = users.id 
-            ORDER BY posts.created_at DESC
+            ${searchQuery}
+            ORDER BY ${sortParam}
             LIMIT $1 OFFSET $2`,
-            [limit, offset, userId]
+            params
         )
         res.json(result.rows)
     } catch(err){
         console.error("Error fetching threads:", err)
         res.status(500).json({error: "Palvelinvirhe"})
     }
-}) //Lataa julkaisut
+}) //Lataa julkaisut. Lisätty lajittelu ja haku parametrit
 
-//profiili sivu, tarkistaa sisäänkirjautumisen, hakeee julkaisut
+//profiili sivu, tarkistaa sisäänkirjautumisen, hakee julkaisut
 
 
 app.get('/api/my-posts', async (req, res) => {
