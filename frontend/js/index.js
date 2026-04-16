@@ -109,7 +109,6 @@ if (deleteBtn){
         }
     })
 }
-}
 
 const sliders = document.querySelectorAll('.auto-submit-slider')
     
@@ -151,7 +150,7 @@ const sliders = document.querySelectorAll('.auto-submit-slider')
                 console.error("Failed to submit rating:", err)
             }
         })
-})//Kalakanta arvostelu modaali
+})}//Kalakanta arvostelu modaali
 
 async function loadFishCards(){
     const container = document.getElementById('fish-card-container')
