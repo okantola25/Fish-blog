@@ -1,7 +1,22 @@
+const sortingButton = document.getElementById("sorting");
+const sortingItems = document.querySelectorAll(".sorting-item");
+let currentSort = 'newest'
+
+if (sortingButton) {
+    sortingItems.forEach((item) => {
+        item.addEventListener("click", (event) => {
+            event.preventDefault();
+            sortingButton.textContent = item.textContent.trim();
+            currentPage = 1
+            currentSort = item.dataset.sort
+            loadPosts()
+        });
+    });
+}
+
 function renderPost(post) {
     const btnClass = post.user_liked ? 'btn-primary' : 'btn-outline-dark'
     const likeText = post.user_liked ? 'Tykätty' : 'Tykkää'
-    const commentCount = post.total_replies || 0
     return `
     <li class="list-group-item mb-1">
         <div class="card shadow">
@@ -17,18 +32,21 @@ function renderPost(post) {
                 <span class="like-text">${likeText}</span>
               </button>
               <button type="button" class="btn btn-outline-dark post-buttons" data-bs-toggle="modal" data-bs-target="#comments-modal" data-id="${post.id}">
-              <span class="reply-count">${commentCount}</span>
-                <span class="reply-text">Kommentit</span>
+                Kommentit
               </button>
             </footer>
           </div>
         </div>
       </li>`
 }
+
+const searchInput = document.getElementById("forum-search")
+
 let currentPage = 1
 async function loadPosts() {
   try{ 
-    const response = await fetch(`/api/load-posts?page=${currentPage}`)
+    const searchText = searchInput ? searchInput.value.trim() : ''
+    const response = await fetch(`/api/load-posts?page=${currentPage}&sort=${currentSort}&search=${encodeURIComponent(searchText)}`)
     const posts = await response.json();
 
     const list = document.getElementById('forum-post-list')
@@ -51,6 +69,26 @@ async function loadPosts() {
   console.error("Virhe ladatessa julkaisuja:", err)
 }}
 loadPosts()
+
+const forumSearchButton = document.getElementById("forum-search-button")
+
+function runSearch() {
+  currentPage = 1
+  loadPosts()
+}
+
+if (forumSearchButton) {
+  forumSearchButton.addEventListener('click', runSearch)
+}
+
+if (searchInput) {
+  searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      runSearch()
+    }
+  })
+}//Hakukenttää varten
 
 document.getElementById('load-more-btn').addEventListener('click',()=>{
   currentPage++
@@ -158,3 +196,4 @@ async function loadModal() {
 }
   
 loadModal()
+
