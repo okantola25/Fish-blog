@@ -23,12 +23,16 @@ document.addEventListener('DOMContentLoaded', kirjautunutUI) //Näyttää vierai
 
 const sortingButton = document.getElementById("sorting");
 const sortingItems = document.querySelectorAll(".sorting-item");
+let currentSort = 'newest'
 
 if (sortingButton) {
     sortingItems.forEach((item) => {
         item.addEventListener("click", (event) => {
             event.preventDefault();
             sortingButton.textContent = item.textContent.trim();
+            currentPage = 1
+            currentSort = item.dataset.sort
+            loadPosts()
         });
     });
 }
@@ -38,6 +42,40 @@ document.addEventListener('DOMContentLoaded', async() =>{
     await loadFishCards()
     initializeRatingSystem()
 })
+function renderPost(post) {
+    const btnClass = post.user_liked ? 'btn-primary' : 'btn-outline-dark'
+    const likeText = post.user_liked ? 'Tykätty' : 'Tykkää'
+    return `
+    <li class="list-group-item mb-1">
+        <div class="card shadow">
+          <div class="card-body">
+            <header>
+              <h2 class="h5 mb-1">${post.title}</h2>
+              <p class="text-muted">${post.username} • ${new Date(post.created_at).toLocaleString('fi-FI')}</p>
+            </header>
+            <p>${post.content}</p>
+            <footer>
+              <button type="button" class="btn ${btnClass} post-buttons like-btn" data-id="${post.id}">
+                <span class="like-count">${post.total_likes}</span>
+                <span class="like-text">${likeText}</span>
+              </button>
+              <button type="button" class="btn btn-outline-dark post-buttons" data-bs-toggle="modal" data-bs-target="#comments-modal" data-id="${post.id}">
+                Kommentit
+              </button>
+            </footer>
+          </div>
+        </div>
+      </li>`
+}
+
+const searchInput = document.getElementById("forum-search")
+
+let currentPage = 1
+async function loadPosts() {
+  try{ 
+    const searchText = searchInput ? searchInput.value.trim() : ''
+    const response = await fetch(`/api/load-posts?page=${currentPage}&sort=${currentSort}&search=${encodeURIComponent(searchText)}`)
+    const posts = await response.json();
 
 async function loadModalComponent(){
     try{
@@ -95,6 +133,62 @@ if (deleteBtn){
         
         if (!confirm("Haluatko varmasti poistaa arvostelusi tästä kalasta?")) {
             return
+    posts.forEach(post =>{
+      const postHTML = renderPost(post)
+      list.insertAdjacentHTML('beforeend', postHTML)
+    })
+
+} catch (err){
+  console.error("Virhe ladatessa julkaisuja:", err)
+}}
+loadPosts()
+
+const forumSearchButton = document.getElementById("forum-search-button")
+
+function runSearch() {
+  currentPage = 1
+  loadPosts()
+}
+
+if (forumSearchButton) {
+  forumSearchButton.addEventListener('click', runSearch)
+}
+
+if (searchInput) {
+  searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      runSearch()
+    }
+  })
+}//Hakukenttää varten
+
+document.getElementById('load-more-btn').addEventListener('click',()=>{
+  currentPage++
+  loadPosts()
+}) //Lataa uusimmat 10 julkaisua
+
+document.getElementById('forum-post-list').addEventListener('click', async (e)=>{
+  const btn = e.target.closest('.like-btn')
+  if(!btn) return
+
+  const postId = btn.getAttribute('data-id')
+  const countSpan = btn.querySelector('.like-count')
+  const textSpan = btn.querySelector('.like-text')
+
+  try{
+  const response = await fetch(`/api/like-post/${postId}`, {method: 'POST'})
+        const data = await response.json()
+        let currentCount = parseInt(countSpan.innerText)
+
+        if (data.liked){
+            btn.classList.replace('btn-outline-dark', 'btn-primary')
+            textSpan.innerText = 'Tykätty'
+            countSpan.innerText = currentCount + 1
+        } else{
+            btn.classList.replace('btn-primary', 'btn-outline-dark')
+            textSpan.innerText = 'Tykkää'
+            countSpan.innerText = currentCount - 1
         }
 
         try{

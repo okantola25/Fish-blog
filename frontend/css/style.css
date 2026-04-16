@@ -113,15 +113,14 @@
     color: #888;
 }
 
+.search-button{
+  border: 1px solid #ced4da;
+}
+
 .tykkays-counter {
     display: inline;
     margin: 0;
     line-height: 1;
-}
-
-#sorting {
-    height: 50px;
-    width: 100%;
 }
 
 #filterBar .row {
