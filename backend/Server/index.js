@@ -253,6 +253,8 @@ app.get('/api/load-posts', async (req, res) =>{
         searchQuery = 'WHERE posts.title ILIKE $4 or posts.content ILIKE $4'
     }
 
+    const sortParam = sortingOptions[sort] || sortingOptions.newest
+
     try{
         const result = await pool.query(
             `SELECT posts.id, posts.title, posts.content, posts.created_at, users.username,
@@ -261,7 +263,7 @@ app.get('/api/load-posts', async (req, res) =>{
             FROM posts 
             JOIN users ON posts.user_id = users.id 
             ${searchQuery}
-            ORDER BY ${sortingOptions[sort]}
+            ORDER BY ${sortParam}
             LIMIT $1 OFFSET $2`,
             params
         )
