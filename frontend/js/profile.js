@@ -73,6 +73,9 @@ function previousPost() {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadMyPosts();
+
+  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+  confirmDeleteBtn.addEventListener("click", deleteUserAccount);
 });
 
 //poista julkaisu
@@ -106,5 +109,44 @@ async function deleteCurrentPost() {
   } catch (error) {
     console.error("Virhe julkaisun poistossa:", error);
     alert("Julkaisun poistaminen epäonnistui.");
+  }
+}
+
+// tilin poisto
+
+async function deleteUserAccount(event) {
+  event.preventDefault();
+
+  const passwordInput = document.getElementById("deletePassword");
+  const password = passwordInput.value.trim();
+
+  if (!password) {
+    alert("Syötä salasana ennen tilin poistamista.");
+    return;
+  }
+
+  const confirmed = confirm("Haluatko varmasti poistaa tilisi?");
+  if (!confirmed) return;
+
+  try {
+    const response = await fetch("/api/delete-user", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Tilin poistaminen epäonnistui.");
+    }
+
+    alert(data.message || "Tili poistettu.");
+    window.location.href = "/index.html";
+  } catch (error) {
+    console.error("Virhe tilin poistossa:", error);
+    alert(error.message || "Tilin poistaminen epäonnistui.");
   }
 }

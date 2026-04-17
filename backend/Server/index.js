@@ -5,6 +5,8 @@ const pgSession = require('connect-pg-simple')(session)
 const pool = require('./helpers/db')
 const { registerUser, loginUser } = require('./helpers/authHjelper')
 const path = require('path')
+const bcrypt = require('bcrypt')
+
 
 const app = express()
 const port = 3000
@@ -92,7 +94,7 @@ app.post('/kirjaudu', async (req, res) =>{
     }
 }) //Kirjautuminen jollakin tilillä
 
-app.delete('/api/delete-user', async (req, res) =>{
+/*app.delete('/api/delete-user', async (req, res) =>{
     const userId = req.session.userId
 
     if(!userId) return res.status(401).json({error: "Kirjaudu sisään poistaaksesi tilisi."})
@@ -110,6 +112,55 @@ app.delete('/api/delete-user', async (req, res) =>{
         res.status(500).json({error: "Tilin poistaminen epäonnistui. Jos ongelma jatkuu ota yhteyttä ylläpitäjiin."})
     }
 }) //Tilin poisto, poistaa myös julkasut ja tykkäykset
+*/
+//tilin poisto, oikea salasana vaaditaan ennen tilin poistoa. 
+app.delete('/api/delete-user', async (req, res) => {
+    const userId = req.session.userId
+    const { password } = req.body
+
+    if (!userId) {
+        return res.status(401).json({ error: "Kirjaudu sisään poistaaksesi tilisi." })
+    }
+
+    if (!password?.trim()) {
+        return res.status(400).json({ error: "Salasana vaaditaan." })
+    }
+
+    try {
+        const result = await pool.query(
+            'SELECT password FROM users WHERE id = $1',
+            [userId]
+        )
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Käyttäjää ei löytynyt." })
+        }
+
+        const hashedPassword = result.rows[0].password
+        const passwordMatch = await bcrypt.compare(password, hashedPassword)
+
+        if (!passwordMatch) {
+            return res.status(401).json({ error: "Väärä salasana." })
+        }
+
+        await pool.query('DELETE FROM users WHERE id = $1', [userId])
+
+        req.session.destroy((err) => {
+            if (err) {
+                console.error(err)
+                return res.status(500).json({ error: "Istunnon sulkeminen epäonnistui." })
+            }
+
+            res.clearCookie('connect.sid')
+            res.json({ message: "Tili poistettu onnistuneesti." })
+        })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: "Tilin poistaminen epäonnistui." })
+    }
+})
+
+
 
 app.post('/api/create-post', async (req, res) =>{
     if(!req.session.userId){
