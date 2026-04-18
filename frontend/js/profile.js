@@ -194,6 +194,7 @@ async function changePassword(event) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  loadProfileName();
   loadMyPosts();
 
   const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
@@ -203,3 +204,24 @@ document.addEventListener("DOMContentLoaded", () => {
   changePasswordForm.addEventListener("submit", changePassword);
 });
 
+//oma profiili nimi
+
+
+async function loadProfileName() {
+  try {
+    const response = await fetch('/api/me');
+    const data = await response.json();
+
+    if (data.kirjautunut) {
+      document.getElementById("profileName").textContent = data.username;
+      document.getElementById("profileAvatar").textContent = data.username.charAt(0).toUpperCase();
+    } else {
+      document.getElementById("profileName").textContent = "Profiili";
+      document.getElementById("profileAvatar").textContent = "?";
+    }
+  } catch (error) {
+    console.error("Virhe profiilinimen latauksessa:", error);
+    document.getElementById("profileName").textContent = "Profiili";
+    document.getElementById("profileAvatar").textContent = "?";
+  }
+}
