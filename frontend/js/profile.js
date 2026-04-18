@@ -12,7 +12,11 @@ function hideConfirmButtons() {
   document.getElementById("cancelDeleteBtn").classList.add("d-none");
 }
 
-
+// laskuri postauksien määrälle profiilissa
+function updatePostCount() {
+  const postCountEl = document.getElementById("postCount");
+  postCountEl.textContent = `(${posts.length})`;
+}
 
 // omat postaukset näkyviin profiliiin
 let posts = [];
@@ -27,6 +31,7 @@ async function loadMyPosts() {
     }
 
     posts = await response.json();
+    updatePostCount();
     showPost();
   } catch (error) {
     console.error('Virhe omien postauksien latauksessa:', error);
@@ -71,13 +76,6 @@ function previousPost() {
   showPost();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadMyPosts();
-
-  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
-  confirmDeleteBtn.addEventListener("click", deleteUserAccount);
-});
-
 //poista julkaisu
 
 async function deleteCurrentPost() {
@@ -100,6 +98,7 @@ async function deleteCurrentPost() {
     }
 
     posts.splice(currentPostIndex, 1);
+    updatePostCount();
 
     if (currentPostIndex >= posts.length && currentPostIndex > 0) {
       currentPostIndex--;
@@ -150,3 +149,57 @@ async function deleteUserAccount(event) {
     alert(error.message || "Tilin poistaminen epäonnistui.");
   }
 }
+
+// salasanan vaihto
+
+async function changePassword(event) {
+  event.preventDefault();
+
+  const currentPassword = document.getElementById("currentPassword").value.trim();
+  const newPassword = document.getElementById("newPassword").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    alert("Täytä kaikki kentät.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/change-password", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        currentPassword,
+        newPassword,
+        confirmPassword
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Salasanan vaihtaminen epäonnistui.");
+    }
+
+    alert(data.message || "Salasana vaihdettu onnistuneesti.");
+
+    document.getElementById("changePasswordForm").reset();
+  } catch (error) {
+    console.error("Virhe salasanan vaihdossa:", error);
+    alert(error.message || "Salasanan vaihtaminen epäonnistui.");
+  }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadMyPosts();
+
+  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+  confirmDeleteBtn.addEventListener("click", deleteUserAccount);
+
+  const changePasswordForm = document.getElementById("changePasswordForm");
+  changePasswordForm.addEventListener("submit", changePassword);
+});
+

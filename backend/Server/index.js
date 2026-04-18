@@ -94,25 +94,59 @@ app.post('/kirjaudu', async (req, res) =>{
     }
 }) //Kirjautuminen jollakin tilillä
 
-/*app.delete('/api/delete-user', async (req, res) =>{
+//vaihda salasana, vaatii vanha salasana ja uuden salasanan.
+
+app.put('/api/change-password', async (req, res) => {
     const userId = req.session.userId
+    const { currentPassword, newPassword, confirmPassword } = req.body
 
-    if(!userId) return res.status(401).json({error: "Kirjaudu sisään poistaaksesi tilisi."})
-
-    try{
-        await pool.query('DELETE FROM users WHERE id = $1', [userId])
-
-        req.session.destroy((err) =>{
-            if (err) throw err
-            res.clearCookie('connect.sid')
-            res.json({message: "Tili poistettu."})
-        })
-    } catch(err){
-        console.error(err)
-        res.status(500).json({error: "Tilin poistaminen epäonnistui. Jos ongelma jatkuu ota yhteyttä ylläpitäjiin."})
+    if (!userId) {
+        return res.status(401).json({ error: "Kirjaudu sisään." })
     }
-}) //Tilin poisto, poistaa myös julkasut ja tykkäykset
-*/
+
+    if (!currentPassword?.trim() || !newPassword?.trim() || !confirmPassword?.trim()) {
+        return res.status(400).json({ error: "Täytä kaikki kentät." })
+    }
+
+    if (newPassword.length < 5) {
+        return res.status(400).json({ error: "Uuden salasanan täytyy olla vähintään 5 merkkiä." })
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ error: "Uudet salasanat eivät täsmää." })
+    }
+
+    try {
+        const result = await pool.query(
+            'SELECT password FROM users WHERE id = $1',
+            [userId]
+        )
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Käyttäjää ei löytynyt." })
+        }
+
+        const hashedPassword = result.rows[0].password
+        const passwordMatch = await bcrypt.compare(currentPassword, hashedPassword)
+
+        if (!passwordMatch) {
+            return res.status(401).json({ error: "Nykyinen salasana on väärä." })
+        }
+
+        const newHashedPassword = await bcrypt.hash(newPassword, 10)
+
+        await pool.query(
+            'UPDATE users SET password = $1 WHERE id = $2',
+            [newHashedPassword, userId]
+        )
+
+        res.json({ message: "Salasana vaihdettu onnistuneesti." })
+    } catch (err) {
+        console.error("Virhe salasanan vaihdossa:", err)
+        res.status(500).json({ error: "Salasanan vaihtaminen epäonnistui." })
+    }
+})
+
 //tilin poisto, oikea salasana vaaditaan ennen tilin poistoa. 
 app.delete('/api/delete-user', async (req, res) => {
     const userId = req.session.userId

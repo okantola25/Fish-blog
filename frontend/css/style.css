@@ -289,3 +289,9 @@
   background-color: #d84333;
   color: white;
 }
+
+#postCount {
+  font-size: 0.9em;
+  color: #666;
+  font-weight: 400;
+}
