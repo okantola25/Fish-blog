@@ -26,7 +26,7 @@ function renderPost(post) {
               <p class="text-muted">${post.username} • ${new Date(post.created_at).toLocaleString('fi-FI')}</p>
             </header>
             <p>${post.content}</p>
-            <footer>
+            <footer class="d-flex">
               <button type="button" class="btn ${btnClass} post-buttons like-btn" data-id="${post.id}">
                 <span class="like-count">${post.total_likes}</span>
                 <span class="like-text">${likeText}</span>
@@ -34,10 +34,35 @@ function renderPost(post) {
               <button type="button" class="btn btn-outline-dark post-buttons" data-bs-toggle="modal" data-bs-target="#comments-modal" data-id="${post.id}">
                 Kommentit
               </button>
+              <button type="button" class="btn ms-auto forumDeletePostBtn" onclick=deletePost(this) data-id="${post.id}" aria-label="Poista julkaisu">
+                <i class="bi bi-trash"></i>
+              </button>
             </footer>
           </div>
         </div>
       </li>`
+}
+
+async function showDelete() {
+  try {
+    const postResponse = await fetch('/api/my-posts')
+    const myPosts = await postResponse.json()
+
+    const loginResponse = await fetch('/api/me')
+    const login = await loginResponse.json()
+
+    if(!login.kirjautunut) return
+
+    document.querySelectorAll('.forumDeletePostBtn').forEach((button) => {
+      const postId = Number(button.dataset.id)
+      if(myPosts.some((post) => postId === Number(post.id))) {
+        button.style.display = "inline-block"
+      }
+    })
+
+  } catch (error) {
+    console.error("Jokin meni pieleen", error)
+  }
 }
 
 const searchInput = document.getElementById("forum-search")
@@ -64,6 +89,7 @@ async function loadPosts() {
       const postHTML = renderPost(post)
       list.insertAdjacentHTML('beforeend', postHTML)
     })
+    showDelete()
 
 } catch (err){
   console.error("Virhe ladatessa julkaisuja:", err)
@@ -121,6 +147,30 @@ document.getElementById('forum-post-list').addEventListener('click', async (e)=>
     console.error("Jokin meni pieleen:", err)
   }
 }) //Lataa lisää julkaisuja napista
+
+async function deletePost(button) {
+  const postId = button.dataset.id
+  const confirmed = confirm("Haluatko varmasti poistaa tämän julkaisun? (Ei voi peruuttaa)");
+  if (!confirmed) return;
+
+  try {
+    const response = await fetch(`/api/delete-post/${postId}`, {
+      method: "DELETE"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Julkaisun poistaminen epäonnistui.");
+    }
+
+    loadPosts();
+  } catch (error) {
+    console.error("Virhe julkaisun poistossa:", error);
+    alert("Julkaisun poistaminen epäonnistui.");
+  }
+}
+
 
 let currentOpenPostId = null
 
