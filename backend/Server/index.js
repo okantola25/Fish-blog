@@ -9,11 +9,13 @@ const bcrypt = require('bcrypt')
 
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '../../frontend')))
 app.use(express.urlencoded({ extended: true }))
+
+app.set('trust proxy', 1)
 
 app.use(session({
     store: new pgSession({
@@ -25,7 +27,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: false 
+    secure: process.env.NODE_ENV === 'production'
   }
 }))
 
