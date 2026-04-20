@@ -17,6 +17,7 @@ if (sortingButton) {
 function renderPost(post) {
     const btnClass = post.user_liked ? 'btn-primary' : 'btn-outline-dark'
     const likeText = post.user_liked ? 'Tykätty' : 'Tykkää'
+    const commentCount = post.total_replies || 0
     return `
     <li class="list-group-item mb-1">
         <div class="card shadow">
@@ -32,7 +33,8 @@ function renderPost(post) {
                 <span class="like-text">${likeText}</span>
               </button>
               <button type="button" class="btn btn-outline-dark post-buttons" data-bs-toggle="modal" data-bs-target="#comments-modal" data-id="${post.id}">
-                Kommentit
+              <span class="reply-count">${commentCount}</span>
+                <span class="reply-text">Kommenttia</span>
               </button>
               <button type="button" class="btn ms-auto forumDeletePostBtn" onclick=deletePost(this) data-id="${post.id}" aria-label="Poista julkaisu">
                 <i class="bi bi-trash"></i>

@@ -154,16 +154,25 @@ const sliders = document.querySelectorAll('.auto-submit-slider')
 
 async function loadFishCards(){
     const container = document.getElementById('fish-card-container')
-    
+    if (!container) return
+
+    const searchInput = document.getElementById('kalakanta-search')
+    const searchText = searchInput ? searchInput.value.trim() : ''
+    const sort = window.currentSortFish || 'rating-desc'
     container.innerHTML = '<p class="text-center w-100">Ladataan kalakantaa...</p>'
 
     try{
-        const response = await fetch('/api/fishes')
+        const response = await fetch(`/api/fishes?search=${encodeURIComponent(searchText)}&sort=${sort}`)
+
         if (!response.ok) throw new Error('Verkkovirhe kalojen latauksessa')
         
         const fishes = await response.json()
-        
         container.innerHTML = ''
+
+        if(fishes.length === 0){
+            container.innerHTML = '<p class="text-center w-100 text-muted">Kaloja ei löytynyt tällä hakusanalla.</p>'
+            return
+        }
         fishes.forEach(fish =>{
           const safeDesc = fish.description ? fish.description.replace(/"/g, '&quot;') : 'Ei kuvausta saatavilla.'
             const cardHTML = `
@@ -204,4 +213,32 @@ async function loadFishCards(){
         container.innerHTML = '<p class="text-center w-100 text-danger">Kalojen lataaminen epäonnistui.</p>'
     }
 } //Lataa kalakortit etusivulle
+
+document.addEventListener('DOMContentLoaded', () =>{
+    const searchInput = document.getElementById('kalakanta-search')
+    const searchButton = document.getElementById('kalakanta-search-button')
+
+    if(searchInput){
+        searchInput.addEventListener('input', (e) =>{
+            if(e.target.value === ''){
+                loadFishCards()
+            }
+        })
+    }
+    
+    if(searchButton){
+        searchButton.addEventListener('click', () =>{
+            loadFishCards()
+        })
+    }
+
+    const sortItems = document.querySelectorAll('.sorting-item-fish')
+    sortItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault()
+            window.currentSortFish = e.target.getAttribute('data-sort')
+            loadFishCards()
+        })
+    })
+})
 

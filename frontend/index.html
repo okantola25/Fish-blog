@@ -15,24 +15,29 @@
 
   <!--haku ja järjestys-->
   <div class="container mb-3" id="filterBar">
-    <div class="row justify-content-center">
+    <div class="row align-items-center justify-content-center">
       <!--Haku-->
-      <div class="col-6">
-        <div class="search-container">
-          <input type="text" class="form-control search-input" placeholder="Search...">
-          <i class="fas fa-search search-icon"></i>
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
+          <form onsubmit="event.preventDefault(); loadFishCards();">
+            <div class="input-group input-group-lg">
+              <input type="search" class="form-control" placeholder="Hae..." id="kalakanta-search" enterkeyhint="search">
+              <button type="button" class="btn btn-outline-secondary search-button" id="kalakanta-search-button" aria-label="Hae">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
 
       <!--järjestys dropdown-->
-      <div class="col-6">
-        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="sorting">
-          järjestele
+      <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end dropdown">
+        <button class="btn btn-lg dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="sorting-fish">
+          Järjestys
         </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item sorting-item" href="#">Tykkäykset (Nouseva)</a></li>
-          <li><a class="dropdown-item sorting-item" href="#">Tykkäykset (Laskeva)</a></li>
-          <li><a class="dropdown-item sorting-item" href="#">muita vaihtoehtoja</a></li>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item sorting-item-fish" href="#" data-sort="rating-desc">Arvosana (Korkein)</a></li>
+          <li><a class="dropdown-item sorting-item-fish" href="#" data-sort="rating-asc">Arvosana (Alin)</a></li>
+          <li><a class="dropdown-item sorting-item-fish" href="#" data-sort="name-asc">Nimi (A-Ö)</a></li>
+          <li><a class="dropdown-item sorting-item-fish" href="#" data-sort="name-desc">Nimi (Ö-A)</a></li>
         </ul>
       </div>
     </div>
