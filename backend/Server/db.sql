@@ -54,7 +54,7 @@ CREATE TABLE fishes (
 
 INSERT INTO fishes (name, scientific_name, description, image_url)
 VALUES 
-    ('Nimi', 'Tieteellinen nimi', 'Kuvaus', 'kuva.jpg');
+    ('Hauki', 'Esox lucius', 'Suomen vesistöjen suurimpia petokaloja.', 'hauki.jpg');
 
 -- Kalojen arvosanat pöytä
 CREATE TABLE fish_ratings (

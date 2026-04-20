@@ -9,23 +9,25 @@ const bcrypt = require('bcrypt')
 
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '../../frontend')))
 app.use(express.urlencoded({ extended: true }))
+
+app.set('trust proxy', 1)
 
 app.use(session({
     store: new pgSession({
         pool : pool,
         tableName : 'session'
     }),
-  secret: process.env.SESSION_SECRET || 'mon petite chou-fleur', //Saa laitta oman
+  secret: process.env.SESSION_SECRET, //Saa laitta oman
   resave: false,
   saveUninitialized: false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: false 
+    secure: process.env.NODE_ENV === 'production'
   }
 }))
 
@@ -490,6 +492,23 @@ app.delete('/api/fishes/:id/rate', async (req, res) =>{
     }
 }) //Kalan arvioinnin poisto
 
+const fs = require('fs')
+
+// Temporary route to build the database
+app.get('/setup-db', async (req, res) => {
+    try {
+        // Read the SQL file from the same folder
+        const sql = fs.readFileSync(path.join(__dirname, 'db.sql'), 'utf8')
+        
+        // Execute the entire SQL string
+        await pool.query(sql)
+        
+        res.send("Tietokanta luotu onnistuneesti! (Database tables created!)")
+    } catch (err) {
+        console.error(err)
+        res.status(500).send("Virhe: " + err.message)
+    }
+})
 
 app.listen(port)
 console.log('success')
