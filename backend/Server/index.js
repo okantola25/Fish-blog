@@ -22,7 +22,7 @@ app.use(session({
         pool : pool,
         tableName : 'session'
     }),
-  secret: process.env.SESSION_SECRET || 'mon petite chou-fleur', //Saa laitta oman
+  secret: process.env.SESSION_SECRET, //Saa laitta oman
   resave: false,
   saveUninitialized: false,
   cookie: {
