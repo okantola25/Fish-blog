@@ -44,7 +44,7 @@ app.get('/api/me', (req, res) =>{
 
 app.get('/users', async (req,res) =>{
     try{
-    const result = await pool.query('SELECT * FROM users')
+    const result = await pool.query('SELECT id, username FROM users')
     res.json(result.rows)
   } catch (err){
     res.status(500).json({ error: err.message })
@@ -390,11 +390,12 @@ app.get('/api/fishes', async (req, res) => {
     const userId = req.session.userId || null
 
     try {
-        const result = await pool.query(`
+    const { search, sort } = req.query;
+
+        let queryStr = `
             SELECT 
                 fishes.*,
                 COALESCE(ROUND(AVG((r.rating_thrill + r.rating_rarity + r.rating_taste + r.rating_overall) / 4.0), 1), 0) AS overall_average,
-
                 COALESCE(ROUND(AVG(r.rating_thrill), 1), 0) AS avg_rating_thrill,
                 COALESCE(ROUND(AVG(r.rating_rarity), 1), 0) AS avg_rating_rarity,
                 COALESCE(ROUND(AVG(r.rating_taste), 1), 0) AS avg_rating_taste,
@@ -402,10 +403,28 @@ app.get('/api/fishes', async (req, res) => {
                 COUNT(r.id) AS total_ratings
             FROM fishes
             LEFT JOIN fish_ratings r ON fishes.id = r.fish_id
-            GROUP BY fishes.id
-            ORDER BY fishes.name ASC
-        `)
+        `
 
+        const queryParams = []
+
+        if(search){
+            queryParams.push(`%${search}%`)
+            queryStr += ` WHERE fishes.name ILIKE $1 OR fishes.scientific_name ILIKE $1`
+        }
+
+        queryStr += ` GROUP BY fishes.id`
+
+        if (sort === 'rating-asc'){
+            queryStr += ` ORDER BY overall_average ASC, fishes.name ASC`
+        } else if(sort === 'name-asc') {
+            queryStr += ` ORDER BY fishes.name ASC`
+        } else if(sort === 'name-desc') {
+            queryStr += ` ORDER BY fishes.name DESC`
+        } else{
+            queryStr += ` ORDER BY overall_average DESC, fishes.name ASC`
+        }
+
+        const result = await pool.query(queryStr, queryParams)
         res.json(result.rows)
     } catch (err) {
         console.error("Virhe kalojen latauksessa:", err)
